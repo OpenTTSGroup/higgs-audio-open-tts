@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import asyncio
+import base64
+import json
 import logging
 import subprocess
 import time
@@ -142,7 +144,6 @@ class TTSEngine:
             payload["seed"] = seed
         if stream:
             payload["stream"] = True
-            payload["stream_format"] = "audio"
 
         return payload
 
@@ -254,18 +255,24 @@ class TTSEngine:
             stream=True,
         )
 
-        byte_buffer = b""
         async with httpx.AsyncClient(timeout=300.0) as client:
             async with client.stream(
                 "POST", f"{self._base_url}/v1/audio/speech", json=payload
             ) as resp:
                 resp.raise_for_status()
-                async for chunk in resp.aiter_bytes():
-                    byte_buffer += chunk
-                    n_complete = len(byte_buffer) - (len(byte_buffer) % 2)
-                    if n_complete > 0:
-                        yield self._pcm_to_float32(byte_buffer[:n_complete])
-                        byte_buffer = byte_buffer[n_complete:]
-
-        if len(byte_buffer) >= 2:
-            yield self._pcm_to_float32(byte_buffer[: len(byte_buffer) - (len(byte_buffer) % 2)])
+                async for line in resp.aiter_lines():
+                    if not line or line.startswith(":"):
+                        continue
+                    if line == "data: [DONE]":
+                        break
+                    if not line.startswith("data: "):
+                        continue
+                    event = json.loads(line[6:])
+                    if event.get("finish_reason") == "stop":
+                        break
+                    audio_data = event.get("audio") or {}
+                    b64 = audio_data.get("data")
+                    if b64:
+                        pcm_bytes = base64.b64decode(b64)
+                        if len(pcm_bytes) >= 2:
+                            yield self._pcm_to_float32(pcm_bytes)
