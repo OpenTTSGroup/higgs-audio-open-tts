@@ -34,10 +34,12 @@ class Settings(BaseSettings):
         ge=1,
         description="Tensor-parallel size for sglang-omni.",
     )
-    higgs_quantization: Literal["none", "fp8", "awq", "gptq"] = Field(
-        default="none",
-        description="Quantization method passed to sglang-omni. "
-        "CUDA only; CPU falls back to 'none'.",
+    higgs_mem_fraction_static: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+        description="SGLang mem_fraction_static for KV cache. "
+        "None lets sglang-omni pick automatically.",
     )
     higgs_backend_url: Optional[str] = Field(
         default=None,
@@ -46,7 +48,7 @@ class Settings(BaseSettings):
     )
     higgs_temperature: float = Field(default=0.8, ge=0.0, le=2.0)
     higgs_top_k: int = Field(default=50, ge=0)
-    higgs_max_new_tokens: int = Field(default=2048, ge=1, le=16384)
+    higgs_max_new_tokens: int = Field(default=1024, ge=1, le=16384)
 
     # --- Service-level (no prefix) --------------------------------------------
     host: str = "0.0.0.0"
@@ -66,12 +68,6 @@ class Settings(BaseSettings):
     @property
     def voices_path(self) -> Path:
         return Path(self.voices_dir)
-
-    @property
-    def effective_quantization(self) -> Literal["none", "fp8", "awq", "gptq"]:
-        if self.higgs_quantization != "none" and not self.resolved_device.startswith("cuda"):
-            return "none"
-        return self.higgs_quantization
 
     @property
     def resolved_device(self) -> str:

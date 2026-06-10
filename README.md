@@ -78,11 +78,11 @@ curl -X POST localhost:8000/v1/audio/design \
 | `HIGGS_DTYPE` | `bfloat16` | `float16` / `bfloat16` / `float32` |
 | `HIGGS_INTERNAL_PORT` | `8001` | Port for the internal sglang-omni backend |
 | `HIGGS_TP_SIZE` | `1` | Tensor-parallel size for multi-GPU |
-| `HIGGS_QUANTIZATION` | `none` | Quantization method: `none` / `fp8` / `awq` / `gptq`. CUDA only; CPU falls back to `none`. |
+| `HIGGS_MEM_FRACTION_STATIC` | (auto) | Fraction of GPU memory for KV cache (`0.0`–`1.0`). Increase if you see "thinker KV cache" errors. |
 | `HIGGS_BACKEND_URL` | (none) | URL of an external sglang-omni backend; if set, the engine connects to it instead of launching its own |
 | `HIGGS_TEMPERATURE` | `0.8` | Default sampling temperature |
 | `HIGGS_TOP_K` | `50` | Default top-k sampling |
-| `HIGGS_MAX_NEW_TOKENS` | `2048` | Default max generated tokens |
+| `HIGGS_MAX_NEW_TOKENS` | `1024` | Default max generated tokens |
 
 ### Service-level (no prefix)
 
@@ -133,7 +133,7 @@ fixed vocabulary:
 | `temperature` | float | `0.8` | extension | Sampling temperature `[0.0, 2.0]`. |
 | `top_k` | int | `50` | extension | Top-k sampling. |
 | `top_p` | float | `null` | extension | Top-p (nucleus) sampling `[0.0, 1.0]`. |
-| `max_new_tokens` | int | `2048` | extension | Max generated multi-codebook steps `[1, 16384]`. |
+| `max_new_tokens` | int | `1024` | extension | Max generated multi-codebook steps `[1, 16384]`. |
 | `seed` | int | `null` | extension | Random seed for reproducibility. |
 
 ### `POST /v1/audio/clone` (multipart/form-data)
@@ -158,7 +158,7 @@ fixed vocabulary:
 | `temperature` | float | `0.8` | extension | Sampling temperature. |
 | `top_k` | int | `50` | extension | Top-k sampling. |
 | `top_p` | float | `null` | extension | Top-p (nucleus) sampling. |
-| `max_new_tokens` | int | `2048` | extension | Max generated tokens. |
+| `max_new_tokens` | int | `1024` | extension | Max generated tokens. |
 | `seed` | int | `null` | extension | Random seed. |
 
 ### `POST /v1/audio/realtime` (application/json)

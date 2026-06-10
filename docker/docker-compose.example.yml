@@ -17,8 +17,8 @@ services:
       # HIGGS_DTYPE: "float32"
       # Uncomment for multi-GPU tensor parallelism:
       # HIGGS_TP_SIZE: "2"
-      # Quantization (CUDA only): "fp8", "awq", or "gptq"
-      # HIGGS_QUANTIZATION: "fp8"
+      # Increase KV cache fraction if you see "thinker KV cache" errors:
+      # HIGGS_MEM_FRACTION_STATIC: "0.9"
     deploy:
       resources:
         reservations:
