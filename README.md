@@ -78,6 +78,7 @@ curl -X POST localhost:8000/v1/audio/design \
 | `HIGGS_DTYPE` | `bfloat16` | `float16` / `bfloat16` / `float32` |
 | `HIGGS_INTERNAL_PORT` | `8001` | Port for the internal sglang-omni backend |
 | `HIGGS_TP_SIZE` | `1` | Tensor-parallel size for multi-GPU |
+| `HIGGS_QUANTIZATION` | `none` | Quantization method: `none` / `fp8` / `awq` / `gptq`. CUDA only; CPU falls back to `none`. |
 | `HIGGS_BACKEND_URL` | (none) | URL of an external sglang-omni backend; if set, the engine connects to it instead of launching its own |
 | `HIGGS_TEMPERATURE` | `0.8` | Default sampling temperature |
 | `HIGGS_TOP_K` | `50` | Default top-k sampling |

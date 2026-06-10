@@ -63,6 +63,9 @@ class TTSEngine:
             "--model-path", s.higgs_model,
             "--port", str(s.higgs_internal_port),
         ]
+        quant = s.effective_quantization
+        if quant != "none":
+            cmd.extend(["--quantization", quant])
         if s.higgs_tp_size > 1:
             cmd.extend(["--tp-size", str(s.higgs_tp_size)])
         if self._device.startswith("cuda"):

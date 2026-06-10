@@ -34,6 +34,11 @@ class Settings(BaseSettings):
         ge=1,
         description="Tensor-parallel size for sglang-omni.",
     )
+    higgs_quantization: Literal["none", "fp8", "awq", "gptq"] = Field(
+        default="none",
+        description="Quantization method passed to sglang-omni. "
+        "CUDA only; CPU falls back to 'none'.",
+    )
     higgs_backend_url: Optional[str] = Field(
         default=None,
         description="URL of an external sglang-omni backend. "
@@ -61,6 +66,12 @@ class Settings(BaseSettings):
     @property
     def voices_path(self) -> Path:
         return Path(self.voices_dir)
+
+    @property
+    def effective_quantization(self) -> Literal["none", "fp8", "awq", "gptq"]:
+        if self.higgs_quantization != "none" and not self.resolved_device.startswith("cuda"):
+            return "none"
+        return self.higgs_quantization
 
     @property
     def resolved_device(self) -> str:

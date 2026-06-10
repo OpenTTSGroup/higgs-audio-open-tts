@@ -75,6 +75,7 @@ curl -X POST localhost:8000/v1/audio/design \
 | `HIGGS_DTYPE` | `bfloat16` | `float16` / `bfloat16` / `float32` |
 | `HIGGS_INTERNAL_PORT` | `8001` | 内部 sglang-omni 后端端口 |
 | `HIGGS_TP_SIZE` | `1` | 多 GPU 张量并行大小 |
+| `HIGGS_QUANTIZATION` | `none` | 量化方式：`none` / `fp8` / `awq` / `gptq`。仅 CUDA 有效，CPU 自动回退为 `none`。 |
 | `HIGGS_BACKEND_URL` | （空） | 外部 sglang-omni 后端 URL；设置后引擎连接该地址而非自行启动 |
 | `HIGGS_TEMPERATURE` | `0.8` | 默认采样温度 |
 | `HIGGS_TOP_K` | `50` | 默认 top-k 采样 |
