@@ -1,0 +1,7 @@
+# Higgs Audio engine extra dependencies.
+# sglang-omni (the inference backend) is installed directly in the Dockerfile.
+# Torch / torchaudio are installed separately from the official PyTorch index.
+httpx>=0.27
+numpy>=1.26
+huggingface_hub>=0.23
+hf_transfer>=0.1.6

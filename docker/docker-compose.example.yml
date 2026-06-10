@@ -1,0 +1,27 @@
+services:
+  higgs-audio:
+    image: ghcr.io/openttsgroup/higgs-audio-open-tts:latest
+    container_name: higgs-audio-open-tts
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./voices:/voices:ro
+      - ./cache:/root/.cache
+    environment:
+      HIGGS_MODEL: "bosonai/higgs-audio-v3-tts-4b"
+      LOG_LEVEL: "info"
+      # Uncomment to let browsers call the API from any origin:
+      # CORS_ENABLED: "true"
+      # Uncomment to fall back to CPU (not recommended for 4B model):
+      # HIGGS_DEVICE: "cpu"
+      # HIGGS_DTYPE: "float32"
+      # Uncomment for multi-GPU tensor parallelism:
+      # HIGGS_TP_SIZE: "2"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
